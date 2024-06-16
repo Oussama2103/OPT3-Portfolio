@@ -1,8 +1,8 @@
 public class Dossier {
     private Vluchteling vluchteling;
     private boolean asielAanvraagAfgerond;
-    private String uitspraakIND; // Kan "geen", "verblijfsvergunning" of "afgewezen" zijn
-    private String statusEigenWoning; // Kan "gestart" of "afgerond" zijn
+    private String uitspraakIND; // "geen", "verblijfsvergunning" of "afgewezen"
+    private String statusEigenWoning; // "gestart" of "afgerond"
     private boolean teruggekeerdNaarHerkomstland;
 
     public Dossier(Vluchteling vluchteling) {
@@ -12,8 +12,6 @@ public class Dossier {
         this.statusEigenWoning = "nee";
         this.teruggekeerdNaarHerkomstland = false;
     }
-
-    // Getters and setters
 
     public Vluchteling getVluchteling() {
         return vluchteling;

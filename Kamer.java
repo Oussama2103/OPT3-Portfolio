@@ -17,10 +17,6 @@ public class Kamer {
         return kamerNummer;
     }
 
-    public void setKamerNummer(int kamerNummer) {
-        this.kamerNummer = kamerNummer;
-    }
-
     public int getTotalePlaatsen() {
         return totalePlaatsen;
     }
@@ -31,10 +27,6 @@ public class Kamer {
 
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public ArrayList<Vluchteling> getBewoners() {

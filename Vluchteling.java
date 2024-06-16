@@ -38,10 +38,6 @@ public class Vluchteling extends Subject {
         return familie;
     }
 
-    public void setFamilie(Familie familie) {
-        this.familie = familie;
-    }
-
     public Dossier getDossier() {
         return dossier;
     }

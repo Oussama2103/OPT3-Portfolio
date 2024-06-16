@@ -13,16 +13,8 @@ public class Familie {
         return leden;
     }
 
-    public void setLeden(ArrayList<Vluchteling> leden) {
-        this.leden = leden;
-    }
-
     public void voegLidToe(Vluchteling lid) {
         leden.add(lid);
-    }
-
-    public void verwijderLid(Vluchteling lid) {
-        leden.remove(lid);
     }
 
     public String getNaam() {
