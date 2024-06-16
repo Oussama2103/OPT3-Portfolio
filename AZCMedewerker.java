@@ -73,14 +73,14 @@ public class AZCMedewerker extends MessageHandler {
     @Override
     protected boolean validateMessage(Bericht bericht) {
         return !bericht.isProcessed() && bericht.getAzcNaam().equals(azc.getNaam()) &&
-                ("plaatsing".equalsIgnoreCase(bericht.getType()) || "vertrek".equalsIgnoreCase(bericht.getType()));
+                ("plaatsing".equalsIgnoreCase(bericht.getType()) || "vertrek".equalsIgnoreCase(bericht.getType()) || "verhuising".equalsIgnoreCase(bericht.getType()));
     }
 
     @Override
     protected void processSpecificMessage(Bericht bericht) {
         switch (bericht.getType()) {
             case "plaatsing":
-                plaatsen(bericht.getVluchteling(), bericht.getFamilie());
+                plaatsen(bericht.getVluchteling(), bericht.getFamilie(), bericht);
                 break;
             case "vertrek":
                 vertrekVluchteling(bericht.getVluchteling(), bericht.getFamilie());
@@ -90,23 +90,24 @@ public class AZCMedewerker extends MessageHandler {
         }
     }
 
-    private void plaatsen(Vluchteling vluchteling, Familie familie) {
+    private void plaatsen(Vluchteling vluchteling, Familie familie, Bericht bericht) {
         Kamer gevestigdKamer = null;
         if (vluchteling.getFamilie() == null) {
-            plaatsenVluchteling(vluchteling, gevestigdKamer);
+            plaatsenVluchteling(vluchteling, gevestigdKamer, bericht);
         }
         else {
            plaatsenGezin(vluchteling, familie, gevestigdKamer);
         }
     }
 
-    private void plaatsenVluchteling (Vluchteling vluchteling, Kamer kamer) {
+    private void plaatsenVluchteling (Vluchteling vluchteling, Kamer kamer, Bericht bericht) {
         kamer = vindGeschikteKamer(vluchteling, null);
         if (kamer != null) {
             kamer.addBewoner(vluchteling);
             System.out.println("Vluchteling " + vluchteling.getNaam() + " geplaatst in kamer " + kamer.getKamerNummer());
         } else {
             System.out.println("Geen geschikte kamer gevonden voor vluchteling " + vluchteling.getNaam());
+            bericht.setProcessed(false);
         }
     }
 

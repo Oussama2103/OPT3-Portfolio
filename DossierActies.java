@@ -27,7 +27,7 @@ public class DossierActies {
         scanner.nextLine();
         System.out.print("Wat is de uitspraak van de IND? (geen/verblijfsvergunning/afgewezen): ");
         String uitspraakIND = scanner.nextLine();
-        System.out.print("Wat is de status van plaatsing in eigen woning? (nee/ja): ");
+        System.out.print("Wat is de status van plaatsing in eigen woning? (nee/gestart/ja): ");
         String statusEigenWoningInput = scanner.nextLine();
         boolean statusEigenWoning = statusEigenWoningInput.equalsIgnoreCase("ja");
         System.out.print("Is de asielzoeker teruggekeerd naar het land van herkomst? (true/false): ");

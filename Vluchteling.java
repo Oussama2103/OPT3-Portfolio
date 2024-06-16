@@ -30,6 +30,9 @@ public class Vluchteling extends Subject {
         return gender;
     }
 
+    public String setAdres (String adres) {
+        return adres;
+    }
     public boolean getLandVanHerkomst() {
         return landVanHerkomst;
     }

@@ -4,12 +4,16 @@ public class Kamer {
     private int kamerNummer;
     private int totalePlaatsen;
     private String type;
+    private String gender;
+    private boolean voorVeiligLanders;
     private ArrayList<Vluchteling> bewoners;
 
-    public Kamer(int kamerNummer, int totalePlaatsen, String type) {
+    public Kamer(int kamerNummer, int totalePlaatsen, String type, String gender, boolean voorVeiligeLanders) {
         this.kamerNummer = kamerNummer;
         this.totalePlaatsen = totalePlaatsen;
         this.type = type;
+        this.gender = gender;
+        this.voorVeiligLanders = voorVeiligeLanders;
         this.bewoners = new ArrayList<>();
     }
 
@@ -97,4 +101,17 @@ public class Kamer {
     public String getGender() {
         return type;
     }
+
+    public boolean isVoorVeiligLanders() {
+        return voorVeiligLanders;
+    }
+
+    public void setVoorVeiligLanders(boolean voorVeiligLanders) {
+        this.voorVeiligLanders = voorVeiligLanders;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
 }

@@ -68,4 +68,8 @@ public class Gemeente {
         }
         return daadwerkelijkePlaatsing;
     }
+
+    public double getRelatievePlaatsing() {
+        return (double) getDaadwerkelijkePlaatsing() / beschikbarePlaatsen();
+    }
 }

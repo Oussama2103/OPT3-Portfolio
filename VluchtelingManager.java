@@ -37,7 +37,7 @@ public class VluchtelingManager {
         System.out.println("Het vertrek van de vluchteling " + vertrekVluchteling.getNaam() + " is geregistreerd.");
         verwijderVluchtelingUitAZC(vertrekVluchteling);
         for (AZC azc : getAZCs()) {
-            azc.getBerichtenBox().voegBerichtToe(new Bericht("vertrek", vertrekVluchteling, null, "de asielzoeker is vertrokken naar het land van de herkomst.", null, false));
+            azc.getBerichtenBox().voegBerichtToe(new Bericht("vertrek", vertrekVluchteling, null, "de asielzoeker is vertrokken naar het land van de herkomst.", "", false));
         }
     }
 

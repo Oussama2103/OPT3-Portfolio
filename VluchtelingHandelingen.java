@@ -33,20 +33,27 @@ public class VluchtelingHandelingen {
     public void nieuwAdresRegistreren() {
         System.out.print("Voer de naam van de vluchteling in: ");
         String naam = scanner.nextLine();
-        System.out.print("Voer het nieuwe adres in: ");
-        String nieuwAdres = scanner.nextLine();
+        Vluchteling vluchteling = vindVluchteling(naam, gemeentes);
 
-        for (Gemeente gemeente : gemeentes) {
-            for (AZC azc : gemeente.getAZCs()) {
-                for (Vluchteling vluchteling : azc.getBewonersManager().getBewoners()) {
-                    if (vluchteling.getNaam().equalsIgnoreCase(naam)) {
-                        vluchteling.registreerNieuwAdres(nieuwAdres);
-                        return;
+        if (vluchteling != null) {
+            if (vluchteling.getDossier().getStatusEigenWoning().equalsIgnoreCase("opgestart")) {
+                System.out.print("Voer het nieuwe adres in: ");
+                String nieuwAdres = scanner.nextLine();
+
+                vluchteling.setAdres(nieuwAdres);
+                vluchteling.getDossier().setStatusEigenWoning("afgerond");
+
+                vluchteling.getVerblijfplaats().getBerichtenBox().voegBerichtToe(new Bericht("vetrek",vluchteling, vluchteling.getFamilie(), "Vluchteling is vertrokken van deze azc", vluchteling.getVerblijfplaats().getNaam(), false));
+                for (Gemeente g : gemeentes) {
+                    for (AZC azc : g.getAZCs()) {
+                        azc.getBerichtenBox().voegBerichtToe(new Bericht("verhuising", vluchteling , vluchteling.getFamilie(), "vluchteling is naar eigen woning vehuisd", azc.getNaam(), false));
                     }
                 }
+                vluchteling.getVerblijfplaats().getBewonersManager().verwijderBewoner(vluchteling);
             }
+        } else {
+            System.out.println("Vluchteling niet gevonden");
         }
-        System.out.println("Vluchteling niet gevonden.");
     }
 
     public static Vluchteling vindVluchteling(String naam, ArrayList<Gemeente> gemeentes) {
