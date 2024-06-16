@@ -62,7 +62,7 @@ public class Kamer {
     }
 
     public boolean isGeschiktVoor(Vluchteling vluchteling) {
-        if (vluchteling.isNonBinair() || vluchteling.getLeeftijd() > 60) {
+        if (vluchteling.isNonBinair(isNonBinair()) || vluchteling.getLeeftijd() > 60) {
             return isEenpersoons() && heeftVrijePlaats();
         }
         else if (vluchteling.getLandVanHerkomst()) {

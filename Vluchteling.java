@@ -37,6 +37,14 @@ public class Vluchteling extends Subject {
         return landVanHerkomst;
     }
 
+    public boolean setLandVanHerkomst(boolean landVanHerkomst) {
+        return landVanHerkomst;
+    }
+
+    public void setFamilie(Familie familie) {
+        this.familie = familie;
+    }
+
     public Familie getFamilie() {
         return familie;
     }
@@ -53,6 +61,10 @@ public class Vluchteling extends Subject {
         return verblijfplaats;
     }
 
+    public void setLeeftijd(int leeftijd) {
+        this.leeftijd = leeftijd;
+    }
+
     public void setVerblijfplaats(AZC verblijfplaats) {
         this.verblijfplaats = verblijfplaats;
     }
@@ -61,7 +73,7 @@ public class Vluchteling extends Subject {
         return vluchteling.getDossier();
     }
 
-    public boolean isNonBinair() {
+    public boolean isNonBinair(boolean isNonBinair) {
         return "non-binair".equalsIgnoreCase(this.gender);
     }
 }
