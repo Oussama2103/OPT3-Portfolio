@@ -2,18 +2,17 @@ public class Bericht {
     private String type;
     private Vluchteling vluchteling;
     private Familie familie;
-    private String details;
-    private boolean isProcessed;
+    private String inhoud;
     private String azcNaam;
-    private Gemeente gemeente;
+    private boolean processed;
 
-    public Bericht(String type, Vluchteling vluchteling, Familie familie, String details, String azcNaam) {
+    public Bericht(String type, Vluchteling vluchteling, Familie familie, String inhoud, String azcNaam, boolean processed) {
         this.type = type;
         this.vluchteling = vluchteling;
         this.familie = familie;
-        this.details = details;
+        this.inhoud = inhoud;
         this.azcNaam = azcNaam;
-        this.isProcessed = false;
+        this.processed = false;
     }
 
     public String getType() {
@@ -22,10 +21,6 @@ public class Bericht {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Gemeente getGemeente() {
-        return gemeente;
     }
 
     public Vluchteling getVluchteling() {
@@ -44,20 +39,12 @@ public class Bericht {
         this.familie = familie;
     }
 
-    public String getDetails() {
-        return details;
+    public String getInhoud() {
+        return inhoud;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public boolean isProcessed() {
-        return isProcessed;
-    }
-
-    public void setProcessed(boolean isProcessed) {
-        this.isProcessed = isProcessed;
+    public void setInhoud(String inhoud) {
+        this.inhoud = inhoud;
     }
 
     public String getAzcNaam() {
@@ -68,4 +55,28 @@ public class Bericht {
         this.azcNaam = azcNaam;
     }
 
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
+    }
+
+    public void toonBericht() {
+        if (vluchteling.getFamilie() == null) {
+            System.out.println("Vluchteling " + vluchteling.getNaam());
+            System.out.println("Type: " + getType());
+            System.out.println("Inhoud: " + getInhoud());
+            System.out.println("AZC Naam: " + getAzcNaam());
+            System.out.println("--------------------");
+        }
+        else if (vluchteling.getFamilie() != null) {
+            System.out.println("Familie " + familie.getNaam());
+            System.out.println("Type: " + getType());
+            System.out.println("Inhoud: " + getInhoud());
+            System.out.println("AZC Naam: " + getAzcNaam());
+            System.out.println("--------------------");
+        }
+    }
 }

@@ -35,18 +35,20 @@ public class DataSeeder {
     }
 
     private static void seedAZCs() {
+        azcs.clear();
+
         Gemeente amsterdam = gemeentes.get(0);
         Gemeente rotterdam = gemeentes.get(1);
         Gemeente denHaag = gemeentes.get(2);
         Gemeente utrecht = gemeentes.get(3);
 
-        AZC azc1 = new AZC("AZC Amsterdam 1", "Straat 1", amsterdam, new KamerManager(), new BewonersManager(), new BerichtManager());
-        AZC azc2 = new AZC("AZC Amsterdam 2", "Straat 2", amsterdam, new KamerManager(), new BewonersManager(), new BerichtManager());
-        AZC azc3 = new AZC("AZC Rotterdam 1", "Straat 3", rotterdam, new KamerManager(), new BewonersManager(), new BerichtManager());
-        AZC azc4 = new AZC("AZC Rotterdam 2", "Straat 4", rotterdam, new KamerManager(), new BewonersManager(), new BerichtManager());
-        AZC azc5 = new AZC("AZC Den Haag 1", "Straat 5", denHaag, new KamerManager(), new BewonersManager(), new BerichtManager());
-        AZC azc6 = new AZC("AZC Utrecht 1", "Straat 6", utrecht, new KamerManager(), new BewonersManager(), new BerichtManager());
-        AZC azc7 = new AZC("Aanmeldcentrum Ter Apel", "Straat 7", utrecht, new KamerManager(), new BewonersManager(), new BerichtManager());
+        AZC azc1 = new AZC("AZC Amsterdam 1", "Straat 1", amsterdam, 100);
+        AZC azc2 = new AZC("AZC Amsterdam 2", "Straat 2", amsterdam, 200);
+        AZC azc3 = new AZC("AZC Rotterdam 1", "Straat 3", rotterdam, 300);
+        AZC azc4 = new AZC("AZC Rotterdam 2", "Straat 4", rotterdam, 40);
+        AZC azc5 = new AZC("AZC Den Haag 1", "Straat 5", denHaag, 50);
+        AZC azc6 = new AZC("AZC Utrecht 1", "Straat 6", utrecht, 60);
+        AZC azc7 = new AZC("Aanmeldcentrum Ter Apel", "Straat 7", utrecht, 150);
 
         amsterdam.getAZCs().addAll(Arrays.asList(azc1, azc2));
         rotterdam.getAZCs().addAll(Arrays.asList(azc3, azc4));
@@ -57,6 +59,8 @@ public class DataSeeder {
     }
 
     private static void seedKamers() {
+        kamers.clear();
+
         for (AZC azc : azcs) {
             for (int i = 1; i <= 8; i++) {
                 Kamer kamer = new Kamer(i, i % 2 == 0 ? 2 : 1, "Type " + (i % 4 + 1));

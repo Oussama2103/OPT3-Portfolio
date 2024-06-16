@@ -18,10 +18,10 @@ public class Beheerder {
     private void rapporteerGemeente(Gemeente gemeente) {
         System.out.println("Gemeente: " + gemeente.getNaam());
         System.out.println("Aantal inwoners: " + gemeente.getAantalInwoners());
-        System.out.println("Beschikbare plaatsen: " + gemeente.getBeschikbarePlaatsen());
+        System.out.println("Beschikbare plaatsen: " + gemeente.beschikbarePlaatsen());
         System.out.println("Geplaatste asielzoekers: " + gemeente.getDaadwerkelijkePlaatsing());
 
-        double percentage = (gemeente.getAZCs().size() / (double) gemeente.getAantalInwoners()) * 100;
+        double percentage = (gemeente.getDaadwerkelijkePlaatsing() / (double) gemeente.getAantalInwoners()) * 100;
         System.out.printf("Plaatsingspercentage: %.2f%%\n", percentage);
 
         System.out.println("AZC's:");

@@ -1,21 +1,26 @@
+import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Observable;
+
 public class AZC implements Observer {
     private String naam;
     private String adres;
     private Gemeente gemeente;
+    private int capaciteit;
     private KamerManager kamerManager;
     private BewonersManager bewonersManager;
-    private BerichtManager berichtManager;
+    private BerichtenBox berichtenBox;
 
-    public AZC(String naam, String adres, Gemeente gemeente, KamerManager kamerManager, BewonersManager bewonersManager, BerichtManager berichtManager) {
+    public AZC(String naam, String adres, Gemeente gemeente, int capaciteit) {
         this.naam = naam;
         this.adres = adres;
         this.gemeente = gemeente;
-        this.kamerManager = kamerManager;
-        this.bewonersManager = bewonersManager;
-        this.berichtManager = berichtManager;
+        this.capaciteit = capaciteit;
+        this.kamerManager = new KamerManager();
+        this.berichtenBox = new BerichtenBox();
+        this.bewonersManager = new BewonersManager();
     }
 
-    // Getters and Setters
 
     public String getNaam() {
         return naam;
@@ -29,10 +34,6 @@ public class AZC implements Observer {
         return adres;
     }
 
-    public void setAdres(String adres) {
-        this.adres = adres;
-    }
-
     public Gemeente getGemeente() {
         return gemeente;
     }
@@ -41,32 +42,33 @@ public class AZC implements Observer {
         this.gemeente = gemeente;
     }
 
+
     public KamerManager getKamerManager() {
         return kamerManager;
-    }
-
-    public void setKamerManager(KamerManager kamerManager) {
-        this.kamerManager = kamerManager;
     }
 
     public BewonersManager getBewonersManager() {
         return bewonersManager;
     }
 
-    public void setBewonersManager(BewonersManager bewonersManager) {
-        this.bewonersManager = bewonersManager;
-    }
-
-    public BerichtManager getBerichtManager() {
-        return berichtManager;
-    }
-
-    public void setBerichtManager(BerichtManager berichtManager) {
-        this.berichtManager = berichtManager;
+    public BerichtenBox getBerichtenBox() {
+        return berichtenBox;
     }
 
     @Override
-    public void update(Bericht bericht) {
-        berichtManager.ontvangBericht(bericht);
+    public void update(Observable o, Object arg) {
+        if (arg instanceof Bericht) {
+            Bericht bericht = (Bericht) arg;
+            berichtenBox.voegBerichtToe(bericht);
+            System.out.println("Bericht ontvangen in AZC " + naam + ": " + bericht.getInhoud());
+        }
+    }
+
+    public int getCapaciteit() {
+        return capaciteit;
+    }
+
+    public int beschikbarePlaatsen (int capaciteit) {
+        return capaciteit - getBewonersManager().getBezetting();
     }
 }

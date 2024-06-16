@@ -1,14 +1,15 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class AZCMedewerker extends MessageHandler {
     private String naam;
     private AZC azc;
-    private UserInputHandler userInputHandler;
 
-    public AZCMedewerker(String naam, AZC azc, UserInputHandler userInputHandler) {
+
+    public AZCMedewerker(String naam, AZC azc) {
         this.naam = naam;
         this.azc = azc;
-        this.userInputHandler = userInputHandler;
+
     }
 
     public void bekijkNietVerwerkteBerichten() {
@@ -17,25 +18,44 @@ public class AZCMedewerker extends MessageHandler {
     }
 
     private ArrayList<Bericht> getNietVerwerkteBerichten() {
-        return azc.getBerichtManager().getNietVerwerkteBerichten(this);
+        ArrayList<Bericht> berichten = azc.getBerichtenBox().getBerichten();
+
+        ArrayList <Bericht> gefitreerdeBerichten = new ArrayList<>();
+
+        for (Bericht b : berichten) {
+            if (validateMessage(b)) {
+                gefitreerdeBerichten.add(b);
+            }
+        }
+        return gefitreerdeBerichten;
     }
 
     private void toonNietVerwerkteBerichten(ArrayList<Bericht> berichten) {
-        System.out.println("Niet verwerkte berichten in de berichtenbox van het AZC:");
-        for (Bericht bericht : berichten) {
-            System.out.println(bericht);
+        if (berichten.isEmpty()) {
+            System.out.println("Geen niet-verwerkte berichten beschikbaar.");
+        } else {
+            System.out.println("Niet verwerkte berichten in de berichtenbox van het AZC:");
+            for (Bericht bericht : berichten) {
+                bericht.toonBericht();
+            }
         }
     }
 
     public void selecteerBerichtEnVerwerk() {
+        Scanner scanner = new Scanner(System.in);
         ArrayList<Bericht> berichten = getNietVerwerkteBerichten();
         if (berichten.isEmpty()) {
             System.out.println("Geen niet-verwerkte berichten beschikbaar.");
             return;
         }
 
-        int keuze = userInputHandler.kiesBericht(berichten);
-        if (userInputHandler.isGeldigeKeuze(keuze, berichten.size())) {
+        for (int i = 0; i < berichten.size(); i++) {
+            System.out.println(i+1 + ". " + berichten.get(i).getAzcNaam() + ": " + berichten.get(i).getType() );
+        }
+        System.out.print("Selecteer een bericht: ");
+        int keuze = scanner.nextInt();
+        scanner.nextLine();
+        if (keuze >= 1 && keuze <= berichten.size()) {
             verwerkBericht(berichten.get(keuze - 1));
         } else {
             System.out.println("Ongeldige keuze, probeer opnieuw.");
@@ -43,30 +63,24 @@ public class AZCMedewerker extends MessageHandler {
     }
 
     private void verwerkBericht(Bericht bericht) {
-        System.out.println("Geselecteerd bericht:");
-        userInputHandler.toonBerichtDetails(bericht);
+        System.out.println("Bericht verwerken...");
 
-        int actie = userInputHandler.kiesActie();
 
-        if (actie == 1) {
-            processSpecificMessage(bericht);
-            bericht.setProcessed(true);
-        } else {
-            System.out.println("Actie geannuleerd.");
-        }
+        processSpecificMessage(bericht);
+        bericht.setProcessed(true);
     }
 
     @Override
     protected boolean validateMessage(Bericht bericht) {
         return !bericht.isProcessed() && bericht.getAzcNaam().equals(azc.getNaam()) &&
-                ("plaatsing".equals(bericht.getType()) || "vertrek".equals(bericht.getType()));
+                ("plaatsing".equalsIgnoreCase(bericht.getType()) || "vertrek".equalsIgnoreCase(bericht.getType()));
     }
 
     @Override
     protected void processSpecificMessage(Bericht bericht) {
         switch (bericht.getType()) {
             case "plaatsing":
-                plaatsVluchteling(bericht.getVluchteling(), bericht.getFamilie());
+                plaatsen(bericht.getVluchteling(), bericht.getFamilie());
                 break;
             case "vertrek":
                 vertrekVluchteling(bericht.getVluchteling(), bericht.getFamilie());
@@ -76,18 +90,35 @@ public class AZCMedewerker extends MessageHandler {
         }
     }
 
-    private void plaatsVluchteling(Vluchteling vluchteling, Familie familie) {
-        Kamer kamer = vindGeschikteKamer(vluchteling, familie);
+    private void plaatsen(Vluchteling vluchteling, Familie familie) {
+        Kamer gevestigdKamer = null;
+        if (vluchteling.getFamilie() == null) {
+            plaatsenVluchteling(vluchteling, gevestigdKamer);
+        }
+        else {
+           plaatsenGezin(vluchteling, familie, gevestigdKamer);
+        }
+    }
+
+    private void plaatsenVluchteling (Vluchteling vluchteling, Kamer kamer) {
+        kamer = vindGeschikteKamer(vluchteling, null);
         if (kamer != null) {
             kamer.addBewoner(vluchteling);
-            if (familie != null) {
-                for (Vluchteling gezinslid : familie.getLeden()) {
-                    kamer.addBewoner(gezinslid);
-                }
-            }
-            System.out.println("Vluchteling " + vluchteling.getNaam() + " en gezin geplaatst in kamer " + kamer.getKamerNummer());
+            System.out.println("Vluchteling " + vluchteling.getNaam() + " geplaatst in kamer " + kamer.getKamerNummer());
         } else {
             System.out.println("Geen geschikte kamer gevonden voor vluchteling " + vluchteling.getNaam());
+        }
+    }
+
+    private void plaatsenGezin (Vluchteling vluchteling, Familie familie, Kamer kamer) {
+        kamer = vindGeschikteKamer(vluchteling, familie);
+        if (kamer != null) {
+            for (Vluchteling f : familie.getLeden()) {
+                kamer.addBewoner(f);
+            }
+            System.out.println("Gezin " + familie.getNaam() + " geplaatst in kamer " + kamer.getKamerNummer());
+        } else {
+            System.out.println("Geen geschikte kamer gevonden voor gezin " + familie.getNaam());
         }
     }
 
@@ -122,4 +153,5 @@ public class AZCMedewerker extends MessageHandler {
             System.out.println("Vluchteling " + vluchteling.getNaam() + " was niet gevonden in het AZC.");
         }
     }
+
 }

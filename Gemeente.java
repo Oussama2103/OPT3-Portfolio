@@ -55,14 +55,8 @@ public class Gemeente {
         azcs.remove(azc);
     }
 
-    public int getBeschikbarePlaatsen() {
-        int beschikbarePlaatsen = 0;
-        for (AZC azc : azcs) {
-            for (Kamer kamer : kamerManager.getKamers()) {
-                beschikbarePlaatsen += kamer.getVrijePlaatsen();
-            }
-        }
-        return beschikbarePlaatsen;
+    public int beschikbarePlaatsen() {
+        return aantalInwoners - getDaadwerkelijkePlaatsing();
     }
 
     public int getDaadwerkelijkePlaatsing() {
