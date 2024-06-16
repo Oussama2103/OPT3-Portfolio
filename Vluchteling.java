@@ -61,23 +61,6 @@ public class Vluchteling extends Subject {
         return vluchteling.getDossier();
     }
 
-    public void registreerNieuwAdres(String nieuwAdres) {
-        if (dossier != null && "ja".equalsIgnoreCase(dossier.getStatusEigenWoning())) {
-            dossier.setStatusEigenWoning("afgerond");
-            System.out.println("Adres geregistreerd: " + nieuwAdres);
-            System.out.println("Plaatsing in eigen woning is afgerond.");
-
-            if (this.verblijfplaats != null) {
-                this.verblijfplaats.getBerichtenBox().voegBerichtToe(
-                        new Bericht("Vertrek", this, null, "Vluchteling vertrekt naar eigen woning", this.verblijfplaats.getNaam(), false)
-                );
-            }
-        } else {
-            System.out.println("Plaatsing in eigen woning is niet opgestart.");
-        }
-    }
-
-
     public boolean isNonBinair() {
         return "non-binair".equalsIgnoreCase(this.gender);
     }
