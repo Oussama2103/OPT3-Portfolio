@@ -17,6 +17,7 @@ public class AZCMedewerkerMenu {
             System.out.println("1. Niet verwerkte berichten inzien");
             System.out.println("2. Bericht selecteren en verwerken");
             System.out.println("3. Terug naar hoofdmenu");
+            System.out.print("Voer uw keuze in: ");
             int keuze = scanner.nextInt();
             scanner.nextLine();
 

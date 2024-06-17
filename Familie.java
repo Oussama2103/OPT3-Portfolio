@@ -5,8 +5,8 @@ public class Familie {
     private ArrayList<Vluchteling> leden;
 
     public Familie(String naam) {
-        this.leden = new ArrayList<>();
         this.naam = naam;
+        this.leden = new ArrayList<>();
     }
 
     public ArrayList<Vluchteling> getLeden() {

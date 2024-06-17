@@ -1,19 +1,20 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Kamer {
     private int kamerNummer;
     private int totalePlaatsen;
-    private String type;
+    private KamerType type;
     private String gender;
     private boolean voorVeiligLanders;
-    private ArrayList<Vluchteling> bewoners;
+    private List<Vluchteling> bewoners;
 
-    public Kamer(int kamerNummer, int totalePlaatsen, String type, String gender, boolean voorVeiligeLanders) {
+    public Kamer(int kamerNummer, int totalePlaatsen, KamerType type, String gender, boolean voorVeiligLanders) {
         this.kamerNummer = kamerNummer;
         this.totalePlaatsen = totalePlaatsen;
         this.type = type;
         this.gender = gender;
-        this.voorVeiligLanders = voorVeiligeLanders;
+        this.voorVeiligLanders = voorVeiligLanders;
         this.bewoners = new ArrayList<>();
     }
 
@@ -25,15 +26,11 @@ public class Kamer {
         return totalePlaatsen;
     }
 
-    public void setTotalePlaatsen(int totalePlaatsen) {
-        this.totalePlaatsen = totalePlaatsen;
-    }
-
-    public String getType() {
+    public KamerType getType() {
         return type;
     }
 
-    public ArrayList<Vluchteling> getBewoners() {
+    public List<Vluchteling> getBewoners() {
         return bewoners;
     }
 
@@ -41,36 +38,28 @@ public class Kamer {
         return totalePlaatsen - bewoners.size();
     }
 
-    public int getBezetting() {
-        return bewoners.size();
-    }
-
-    public boolean addBewoner(Vluchteling vluchteling) {
-        if (getVrijePlaatsen() > 0) {
-            bewoners.add(vluchteling);
-            return true;
-        }
-        return false;
+    public void addBewoner(Vluchteling vluchteling) {
+        bewoners.add(vluchteling);
     }
 
     public void removeBewoner(Vluchteling vluchteling) {
         bewoners.remove(vluchteling);
     }
 
-    public boolean bevatBewoner(Vluchteling vluchteling) {
-        return bewoners.contains(vluchteling);
-    }
-
     public boolean isGeschiktVoor(Vluchteling vluchteling) {
-        if (vluchteling.isNonBinair(isNonBinair()) || vluchteling.getLeeftijd() > 60) {
-            return isEenpersoons() && heeftVrijePlaats();
-        }
-        else if (vluchteling.getLandVanHerkomst()) {
-            return isVeiligeLandKamer() && heeftVrijePlaats();
-        } else if (vluchteling.getLeeftijd() < 18) {
-                return isJongerenKamer() && heeftVrijePlaats();
-        } else {
-            return heeftVrijePlaats();
+        switch (type) {
+            case NONBINAIRKAMER:
+                return vluchteling.isNonBinair() && (vluchteling.getLeeftijd() > 60 || vluchteling.getFamilie() != null);
+            case VEILIGELANDKAMER:
+                return vluchteling.getLandVanHerkomst() && voorVeiligLanders && heeftVrijePlaats();
+            case JONGERENKAMER:
+                return vluchteling.getLeeftijd() < 18 && heeftVrijePlaats();
+            case GEZINSKAMER:
+                return vluchteling.getFamilie() != null && heeftVrijePlaats() && getVrijePlaatsen() >= vluchteling.getFamilie().getLeden().size() + 1;
+            case EENPERSOONSKAMER:
+                return heeftVrijePlaats();
+            default:
+                return false;
         }
     }
 
@@ -79,27 +68,27 @@ public class Kamer {
     }
 
     public boolean isGezinsKamer() {
-        return "Gezinskamer".equalsIgnoreCase(type);
+        return type == KamerType.GEZINSKAMER;
     }
 
     public boolean isNonBinair() {
-        return "NonBinair".equalsIgnoreCase(type);
+        return type == KamerType.NONBINAIRKAMER;
     }
 
     public boolean isEenpersoons() {
-        return "Eenpersoons".equalsIgnoreCase(type);
+        return type == KamerType.EENPERSOONSKAMER;
     }
 
     public boolean isJongerenKamer() {
-        return "Jongerenkamer".equalsIgnoreCase(type);
+        return type == KamerType.JONGERENKAMER;
     }
 
     public boolean isVeiligeLandKamer() {
-        return "VeiligeLandKamer".equalsIgnoreCase(type);
+        return type == KamerType.VEILIGELANDKAMER;
     }
 
     public String getGender() {
-        return type;
+        return gender;
     }
 
     public boolean isVoorVeiligLanders() {
@@ -113,5 +102,4 @@ public class Kamer {
     public void setGender(String gender) {
         this.gender = gender;
     }
-
 }

@@ -10,7 +10,7 @@ public class VluchtelingTest {
 
     @BeforeEach
     public void setUp() {
-        kamer = new Kamer(1, 100, "Eenpersoonskamer", "man", true);
+        kamer = new Kamer(1, 100, KamerType.EENPERSOONSKAMER, "man", true);
     }
 
 

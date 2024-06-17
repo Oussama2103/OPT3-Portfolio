@@ -64,16 +64,17 @@ public class Bericht {
     }
 
     public void toonBericht() {
-        if (vluchteling.getFamilie() == null) {
+        if (vluchteling != null && vluchteling.getFamilie() == null) {
             System.out.println("Vluchteling " + vluchteling.getNaam());
             System.out.println("Type: " + getType());
             System.out.println("Inhoud: " + getInhoud());
             System.out.println("AZC Naam: " + getAzcNaam());
             System.out.println("--------------------");
         }
-        else if (vluchteling.getFamilie() != null) {
+        else if (vluchteling == null && vluchteling.getFamilie() != null) {
             System.out.println("Familie " + familie.getNaam());
             System.out.println("Type: " + getType());
+            System.out.println("Aantal Leden: " + familie.getLeden().size());
             System.out.println("Inhoud: " + getInhoud());
             System.out.println("AZC Naam: " + getAzcNaam());
             System.out.println("--------------------");

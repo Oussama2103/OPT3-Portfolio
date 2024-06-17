@@ -64,33 +64,17 @@ public class DataSeeder {
         for (AZC azc : azcs) {
             int kamerNummer = 1;
 
+            Kamer kamer1 = new Kamer(kamerNummer, 1, KamerType.EENPERSOONSKAMER, "Man", false);
+            Kamer kamer2 = new Kamer(kamerNummer++, 1, KamerType.EENPERSOONSKAMER, "Vrouw", false);
+            Kamer kamer3 = new Kamer(kamerNummer++, 2, KamerType.GEZINSKAMER, "Gemengd", false);
+            Kamer kamer4 = new Kamer(kamerNummer++, 4, KamerType.GEZINSKAMER, "Gemengd", false);
+            Kamer kamer5 = new Kamer(kamerNummer++, 2, KamerType.JONGERENKAMER, "Man", false);
+            Kamer kamer6 = new Kamer(kamerNummer++, 2, KamerType.JONGERENKAMER, "Vrouw", false);
+            Kamer kamer7 = new Kamer(kamerNummer++, 1, KamerType.VEILIGELANDKAMER, "Man", true);
+            Kamer kamer8 = new Kamer(kamerNummer++, 1, KamerType.VEILIGELANDKAMER, "Vrouw", true);
 
-            Kamer kamer1 = new Kamer(kamerNummer++, 1, "Eenpersoonskamer", "Man", false);
-            Kamer kamer2 = new Kamer(kamerNummer++, 1, "Eenpersoonskamer", "Vrouw", false);
-            Kamer kamer3 = new Kamer(kamerNummer++, 2, "Gezinskamer", "Gemengd", false);
-            Kamer kamer4 = new Kamer(kamerNummer++, 2, "Gezinskamer", "Gemengd", false);
-            Kamer kamer5 = new Kamer(kamerNummer++, 2, "Jongerenkamer", "Man", false);
-            Kamer kamer6 = new Kamer(kamerNummer++, 2, "Jongerenkamer", "Vrouw", false);
-            Kamer kamer7 = new Kamer(kamerNummer++, 1, "VeiligeLandKamer", "Man", true);
-            Kamer kamer8 = new Kamer(kamerNummer++, 1, "VeiligeLandKamer", "Vrouw", true);
-
-            azc.getKamerManager().getKamers().add(kamer1);
-            azc.getKamerManager().getKamers().add(kamer2);
-            azc.getKamerManager().getKamers().add(kamer3);
-            azc.getKamerManager().getKamers().add(kamer4);
-            azc.getKamerManager().getKamers().add(kamer5);
-            azc.getKamerManager().getKamers().add(kamer6);
-            azc.getKamerManager().getKamers().add(kamer7);
-            azc.getKamerManager().getKamers().add(kamer8);
-
-            kamers.add(kamer1);
-            kamers.add(kamer2);
-            kamers.add(kamer3);
-            kamers.add(kamer4);
-            kamers.add(kamer5);
-            kamers.add(kamer6);
-            kamers.add(kamer7);
-            kamers.add(kamer8);
+            azc.getKamerManager().getKamers().addAll(Arrays.asList(kamer1, kamer2, kamer3, kamer4, kamer5, kamer6, kamer7, kamer8));
+            kamers.addAll(Arrays.asList(kamer1, kamer2, kamer3, kamer4, kamer5, kamer6, kamer7, kamer8));
         }
     }
 

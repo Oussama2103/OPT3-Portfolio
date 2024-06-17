@@ -1,74 +1,106 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class VluchtelingManager {
-    private ArrayList<Gemeente> gemeentes;
-    private KamerManager kamerManager;
-    private DossierManager dossierManager;
+    private HashMap<String, Familie> geregistreerdeFamilies;
+    private AZCManager azcManager;
+    private BewonersManager bewonersManager;
 
-    public VluchtelingManager() {
-        this.gemeentes = (ArrayList<Gemeente>) DataSeeder.gemeentes;
-        this.kamerManager = new KamerManager();
-        this.dossierManager = new DossierManager();
+    public VluchtelingManager(AZCManager azcManager) {
+        this.geregistreerdeFamilies = new HashMap<>();
+        this.azcManager = azcManager;
+        this.bewonersManager = new BewonersManager();
+
     }
 
-    public void registreerVluchteling(Vluchteling vluchteling, boolean heeftPaspoort) {
+    public void registreerVluchteling() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Voer naam van de vluchteling in: ");
+        String naam = scanner.nextLine();
+
+        System.out.print("Voer leeftijd van de vluchteling in: ");
+        int leeftijd = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        System.out.print("Voer gender van de vluchteling in: ");
+        String gender = scanner.nextLine();
+
+        System.out.print("Is het land van herkomst veilig? (true/false): ");
+        boolean landVanHerkomstVeilig = scanner.nextBoolean();
+        scanner.nextLine();
+
+        System.out.print("Heeft de vluchteling een paspoort? (true/false): ");
+        boolean heeftPaspoort = scanner.nextBoolean();
+        scanner.nextLine();
+
+        System.out.println();
+
+        Familie familie = null;
+        System.out.print("Voer familienaam in (indien van toepassing, anders laat leeg): ");
+        String familienaam = scanner.nextLine();
+        if (familienaam != null && !familienaam.isEmpty()) {
+            if (!geregistreerdeFamilies.containsKey(familienaam)) {
+                geregistreerdeFamilies.put(familienaam, new Familie(familienaam));
+            }
+            familie = geregistreerdeFamilies.get(familienaam);
+            bewonersManager.voegFamilieToe(familie);
+        }
+
+        Vluchteling vluchteling = new Vluchteling(naam, leeftijd, gender, landVanHerkomstVeilig, familie);
+        bewonersManager.voegVluchtelingToe(vluchteling);
+        Dossier dossier = null;
         if (heeftPaspoort) {
-            vluchteling.setDossier(new Dossier(vluchteling));
-            dossierManager.updateDossier(vluchteling, false, "Geen", false, false);
+            dossier = new Dossier(vluchteling);
         }
-        plaatsOfVerhuisAsielzoeker(vluchteling, vindTerApel());
-        System.out.println("Asielzoeker " + vluchteling.getNaam() + " is succesvol geregistreerd in 'Aanmeldcentrum Ter Apel'");
-    }
-
-    public void plaatsOfVerhuisAsielzoeker(Vluchteling vluchteling, AZC besteAZC) {
-        if (vluchteling.getVerblijfplaats() != null) {
-            vluchteling.getVerblijfplaats().getBewonersManager().verwijderBewoner(vluchteling);
-        }
-        besteAZC.getBewonersManager().voegVluchtelingToe(vluchteling);
-        vluchteling.setVerblijfplaats(besteAZC);
-        besteAZC.getGemeente().addVluchteling(vluchteling);
-        System.out.println("Asielzoeker " + vluchteling.getNaam() + " is verhuisd naar " + besteAZC.getGemeente().getNaam() + " naar " + besteAZC.getNaam());
-        besteAZC.getBerichtenBox().voegBerichtToe(new Bericht("plaatsing", vluchteling, null, "Nieuwe asielzoeker geplaatst", besteAZC.getNaam(), false));
+        AZC besteAZC = DataSeeder.azcs.get(6);
+        azcManager.plaatsVluchtelingInAZC(vluchteling, besteAZC);
+        System.out.println("Vluchteling " + naam + " is geplaatst in " + besteAZC.getNaam());
 
     }
 
-    public void registreerVertrek(Vluchteling vertrekVluchteling) {
-        vertrekVluchteling.getDossier().setTeruggekeerdNaarHerkomstland(true);
-        System.out.println("Het vertrek van de vluchteling " + vertrekVluchteling.getNaam() + " is geregistreerd.");
-        verwijderVluchtelingUitAZC(vertrekVluchteling);
-        for (AZC azc : getAZCs()) {
-            azc.getBerichtenBox().voegBerichtToe(new Bericht("vertrek", vertrekVluchteling, null, "de asielzoeker is vertrokken naar het land van de herkomst.", "", false));
+    public void plaatsOfVerhuisFamilie() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Voer familienaam in: ");
+        String familienaam = scanner.nextLine();
+
+        Familie familie = geregistreerdeFamilies.get(familienaam);
+        if (familie != null) {
+            AZC besteAZC = azcManager.vindBesteAZC();
+            if (besteAZC != null) {
+                for (Vluchteling lid : familie.getLeden()) {
+                    azcManager.plaatsVluchtelingInAZC(lid, besteAZC);
+                }
+                System.out.println("Familie " + familienaam + " is geplaatst in " + besteAZC.getNaam());
+                besteAZC.getBerichtenBox().voegBerichtToe(new Bericht("Plaatsing",null , familie, "familie is geplaatst", besteAZC.getNaam(), false));
+            } else {
+                System.out.println("Geen beschikbare AZC gevonden.");
+            }
+        } else {
+            System.out.println("Familie " + familienaam + " niet gevonden.");
         }
     }
 
-    private AZC vindTerApel() {
-        for (Gemeente g : gemeentes) {
-            for (AZC azc : g.getAZCs()) {
-                if (azc.getNaam().equalsIgnoreCase("Aanmeldcentrum Ter Apel")) {
-                    return azc;
+    public void registreerVertrekFamilie(CommunicationManager communicationManager) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Voer familienaam in: ");
+        String familienaam = scanner.nextLine();
+
+        Familie familie = geregistreerdeFamilies.get(familienaam);
+        if (familie != null) {
+            for (Vluchteling lid : familie.getLeden()) {
+                if (lid.getDossier() != null) {
+                    lid.getDossier().setTeruggekeerdNaarHerkomstland(true);
                 }
             }
+            geregistreerdeFamilies.remove(familienaam);
+            communicationManager.verstuurBerichtNaarAZCs(new Bericht("vertrek", null, familie, "Vertrek van familie geregistreerd", null, false));
+            System.out.println("Familie " + familienaam + " is geregistreerd als vertrokken.");
+        } else {
+            System.out.println("Familie " + familienaam + " niet gevonden.");
         }
-        return null;
-    }
-
-    private void verwijderVluchtelingUitAZC(Vluchteling vluchteling) {
-        for (Gemeente gemeente : gemeentes) {
-            for (AZC azc : gemeente.getAZCs()) {
-                if (azc.getBewonersManager().bevatVluchteling(vluchteling)) {
-                    azc.getBewonersManager().verwijderBewoner(vluchteling);
-                    System.out.println("Vluchteling " + vluchteling.getNaam() + " is verwijderd uit " + azc.getNaam());
-                    return;
-                }
-            }
-        }
-    }
-
-    private ArrayList<AZC> getAZCs() {
-        ArrayList<AZC> azcs = new ArrayList<>();
-        for (Gemeente gemeente : gemeentes) {
-            azcs.addAll(gemeente.getAZCs());
-        }
-        return azcs;
     }
 }

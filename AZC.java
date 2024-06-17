@@ -1,8 +1,6 @@
 import java.util.ArrayList;
-import java.util.Observer;
-import java.util.Observable;
 
-public class AZC implements Observer {
+public class AZC {
     private String naam;
     private String adres;
     private Gemeente gemeente;
@@ -21,17 +19,60 @@ public class AZC implements Observer {
         this.bewonersManager = new BewonersManager();
     }
 
-
     public String getNaam() {
         return naam;
     }
 
-    public void setNaam(String naam) {
-        this.naam = naam;
+    public KamerManager getKamerManager() {
+        return kamerManager;
+    }
+
+    public BerichtenBox getBerichtenBox() {
+        return berichtenBox;
+    }
+
+    public int getCapaciteit() {
+        return capaciteit;
+    }
+
+    public int beschikbarePlaatsen() {
+        return capaciteit - bewonersManager.getBezetting();
+    }
+
+    public BewonersManager getBewonersManager() {
+        return bewonersManager;
+    }
+
+    public boolean plaatsVluchteling(Vluchteling vluchteling, Familie familie) {
+        Kamer kamer = kamerManager.vindGeschikteKamer(vluchteling, familie);
+        if (kamer != null) {
+            if (familie == null || !familie.getLeden().isEmpty()) {
+                if (familie == null) {
+                    kamer.addBewoner(vluchteling);
+                    System.out.println("Vluchteling " + vluchteling.getNaam() + " geplaatst in kamer " + kamer.getKamerNummer());
+                } else {
+                    for (Vluchteling familielid : familie.getLeden()) {
+                        kamer.addBewoner(familielid);
+                    }
+                    System.out.println("Gezin " + familie.getNaam() + " geplaatst in kamer " + kamer.getKamerNummer());
+                }
+                return true;
+            } else {
+                System.out.println("Geen geschikte kamer gevonden voor " + (familie == null ? "vluchteling " + vluchteling.getNaam() : "gezin " + familie.getNaam()));
+                return false;
+            }
+        } else {
+            System.out.println("Geen geschikte kamer gevonden voor " + (familie == null ? "vluchteling " + vluchteling.getNaam() : "gezin " + familie.getNaam()));
+            return false;
+        }
     }
 
     public String getAdres() {
         return adres;
+    }
+
+    public void setAdres(String adres) {
+        this.adres = adres;
     }
 
     public Gemeente getGemeente() {
@@ -40,35 +81,5 @@ public class AZC implements Observer {
 
     public void setGemeente(Gemeente gemeente) {
         this.gemeente = gemeente;
-    }
-
-
-    public KamerManager getKamerManager() {
-        return kamerManager;
-    }
-
-    public BewonersManager getBewonersManager() {
-        return bewonersManager;
-    }
-
-    public BerichtenBox getBerichtenBox() {
-        return berichtenBox;
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg instanceof Bericht) {
-            Bericht bericht = (Bericht) arg;
-            berichtenBox.voegBerichtToe(bericht);
-            System.out.println("Bericht ontvangen in AZC " + naam + ": " + bericht.getInhoud());
-        }
-    }
-
-    public int getCapaciteit() {
-        return capaciteit;
-    }
-
-    public int beschikbarePlaatsen (int capaciteit) {
-        return capaciteit - getBewonersManager().getBezetting();
     }
 }

@@ -30,18 +30,20 @@ public class VluchtelingHandelingen {
         }
     }
 
-    public void nieuwAdresRegistreren() {
+    public void
+    nieuwAdresRegistreren() {
         System.out.print("Voer de naam van de vluchteling in: ");
         String naam = scanner.nextLine();
         Vluchteling vluchteling = vindVluchteling(naam, gemeentes);
 
         if (vluchteling != null) {
-            if (vluchteling.getDossier().getStatusEigenWoning().equalsIgnoreCase("opgestart")) {
+            if (vluchteling.getDossier().getStatusEigenWoning().equalsIgnoreCase("gestart")) {
                 System.out.print("Voer het nieuwe adres in: ");
                 String nieuwAdres = scanner.nextLine();
 
                 vluchteling.setAdres(nieuwAdres);
                 vluchteling.getDossier().setStatusEigenWoning("afgerond");
+                System.out.println("Vluchteling is geplaats in een eigen woning");
 
                 vluchteling.getVerblijfplaats().getBerichtenBox().voegBerichtToe(new Bericht("vetrek",vluchteling, vluchteling.getFamilie(), "Vluchteling is vertrokken van deze azc", vluchteling.getVerblijfplaats().getNaam(), false));
                 for (Gemeente g : gemeentes) {
@@ -49,7 +51,6 @@ public class VluchtelingHandelingen {
                         azc.getBerichtenBox().voegBerichtToe(new Bericht("verhuising", vluchteling , vluchteling.getFamilie(), "vluchteling is naar eigen woning vehuisd", azc.getNaam(), false));
                     }
                 }
-                vluchteling.getVerblijfplaats().getBewonersManager().verwijderBewoner(vluchteling);
             }
         } else {
             System.out.println("Vluchteling niet gevonden");
@@ -62,6 +63,7 @@ public class VluchtelingHandelingen {
                 for (Vluchteling vluchteling : azc.getBewonersManager().getBewoners()) {
                     if (vluchteling.getNaam().equalsIgnoreCase(naam)) {
                         return vluchteling;
+
                     }
                 }
             }

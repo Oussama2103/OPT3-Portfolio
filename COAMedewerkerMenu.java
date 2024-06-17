@@ -6,10 +6,10 @@ public class COAMedewerkerMenu {
     private ArrayList<Gemeente> gemeentes;
     private COAMedewerker coaMedewerker;
 
-    public COAMedewerkerMenu(Scanner scanner, ArrayList<Gemeente> gemeentes, COAMedewerker coaMedewerker) {
+    public COAMedewerkerMenu(Scanner scanner, ArrayList<Gemeente> gemeentes) {
         this.scanner = scanner;
-        this.gemeentes = (ArrayList<Gemeente>) DataSeeder.gemeentes;
-        this.coaMedewerker = coaMedewerker;
+        this.gemeentes = gemeentes;
+        this.coaMedewerker = new COAMedewerker("COA Medewerker", gemeentes); // Assuming a default name
     }
 
     public void showMenu() {
@@ -18,41 +18,33 @@ public class COAMedewerkerMenu {
         while (!exit) {
             System.out.println("COA-medewerker menu:");
             System.out.println("1. Vluchteling registreren");
-            System.out.println("2. Asielzoeker plaatsen of verhuizen");
+            System.out.println("2. Familie plaatsen of verhuizen");
             System.out.println("3. Dossier bijwerken");
-            System.out.println("4. Vertrek registreren voor vluchteling");
-            System.out.println("5. Vertrek registreren voor familie");
-            System.out.println("6. Familie registreren");
-            System.out.println("7. Familie plaatsen of verhuizen");
-            System.out.println("8. Terug naar hoofdmenu");
+            System.out.println("4. Vertrek registreren voor familie");
+            System.out.println("5. Asielzoeker plaatsen of verhuizen");
+            System.out.println("6. Terug naar hoofdmenu");
             System.out.print("Voer uw keuze in: ");
 
             int keuze = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // Consume newline
 
             switch (keuze) {
                 case 1:
-                    new VluchtelingActies(scanner, gemeentes, coaMedewerker).registreer();
+                    coaMedewerker.registreerVluchteling();
                     break;
                 case 2:
-                    new VluchtelingActies(scanner, gemeentes, coaMedewerker).plaatsenOfVerhuizen();
+                    coaMedewerker.plaatsOfVerhuisFamilie();
                     break;
                 case 3:
-                    new DossierActies(scanner, gemeentes, coaMedewerker).bijwerken();
+                    coaMedewerker.updateDossier();
                     break;
                 case 4:
-                    new VertrekActies(scanner, gemeentes, coaMedewerker).registreren();
+                    coaMedewerker.registreerVertrekFamilie();
                     break;
                 case 5:
-                    new FamilieVertrekActies(scanner, gemeentes, coaMedewerker).registreren();
+                    coaMedewerker.plaatsOfVerhuisVluchteling();
                     break;
                 case 6:
-                    new FamilieActies(scanner, gemeentes, coaMedewerker).registreren();
-                    break;
-                case 7:
-                    new FamilieActies(scanner, gemeentes, coaMedewerker).plaatsenOfVerhuizen();
-                    break;
-                case 8:
                     exit = true;
                     break;
                 default:

@@ -34,8 +34,8 @@ public class MenuHandler {
                     new BeheerderMenu(scanner, gemeentes, beheerder).showMenu();
                     break;
                 case 2:
-                    COAMedewerker coaMedewerker = new COAMedewerker(naam);
-                    new COAMedewerkerMenu(scanner, gemeentes, coaMedewerker).showMenu();
+                    COAMedewerker coaMedewerker = new COAMedewerker(naam, gemeentes);
+                    new COAMedewerkerMenu(scanner, gemeentes).showMenu();
                     break;
                 case 3:
                     new VluchtelingMenu(scanner, gemeentes).showMenu();

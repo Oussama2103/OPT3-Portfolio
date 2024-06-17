@@ -7,26 +7,34 @@ public class KamerManager {
         this.kamers = new ArrayList<>();
     }
 
-    public void addKamer(Kamer kamer) {
+    public ArrayList<Kamer> getKamers() {
+        return kamers;
+    }
+
+    public void voegKamerToe(Kamer kamer) {
         kamers.add(kamer);
     }
 
-    public Kamer vindGeschikteKamer(Vluchteling vluchteling) {
+    public Kamer vindGeschikteKamer(Vluchteling vluchteling, Familie familie) {
         for (Kamer kamer : kamers) {
-            if (kamer.isGeschiktVoor(vluchteling)) {
+            if (isGeschikteKamer(kamer, vluchteling, familie)) {
                 return kamer;
             }
         }
         return null;
     }
 
-    public ArrayList<Kamer> getKamers() {
-        return kamers;
+    private boolean isGeschikteKamer(Kamer kamer, Vluchteling vluchteling, Familie familie) {
+        if (familie != null) {
+            return kamer.isGezinsKamer() && kamer.getVrijePlaatsen() >= familie.getLeden().size() + 1;
+        } else {
+            return kamer.isGeschiktVoor(vluchteling);
+        }
     }
 
     public Kamer vindKamerVanBewoner(Vluchteling vluchteling) {
         for (Kamer kamer : kamers) {
-            if (kamer.bevatBewoner(vluchteling)) {
+            if (kamer.getBewoners().contains(vluchteling)) {
                 return kamer;
             }
         }

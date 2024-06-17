@@ -5,11 +5,9 @@ public class AZCMedewerker extends MessageHandler {
     private String naam;
     private AZC azc;
 
-
     public AZCMedewerker(String naam, AZC azc) {
         this.naam = naam;
         this.azc = azc;
-
     }
 
     public void bekijkNietVerwerkteBerichten() {
@@ -19,15 +17,14 @@ public class AZCMedewerker extends MessageHandler {
 
     private ArrayList<Bericht> getNietVerwerkteBerichten() {
         ArrayList<Bericht> berichten = azc.getBerichtenBox().getBerichten();
-
-        ArrayList <Bericht> gefitreerdeBerichten = new ArrayList<>();
+        ArrayList<Bericht> gefilterdeBerichten = new ArrayList<>();
 
         for (Bericht b : berichten) {
             if (validateMessage(b)) {
-                gefitreerdeBerichten.add(b);
+                gefilterdeBerichten.add(b);
             }
         }
-        return gefitreerdeBerichten;
+        return gefilterdeBerichten;
     }
 
     private void toonNietVerwerkteBerichten(ArrayList<Bericht> berichten) {
@@ -50,7 +47,7 @@ public class AZCMedewerker extends MessageHandler {
         }
 
         for (int i = 0; i < berichten.size(); i++) {
-            System.out.println(i+1 + ". " + berichten.get(i).getAzcNaam() + ": " + berichten.get(i).getType() );
+            System.out.println(i + 1 + ". " + berichten.get(i).getAzcNaam() + ": " + berichten.get(i).getType());
         }
         System.out.print("Selecteer een bericht: ");
         int keuze = scanner.nextInt();
@@ -65,7 +62,6 @@ public class AZCMedewerker extends MessageHandler {
     private void verwerkBericht(Bericht bericht) {
         System.out.println("Bericht verwerken...");
 
-
         processSpecificMessage(bericht);
         bericht.setProcessed(true);
     }
@@ -73,17 +69,20 @@ public class AZCMedewerker extends MessageHandler {
     @Override
     protected boolean validateMessage(Bericht bericht) {
         return !bericht.isProcessed() && bericht.getAzcNaam().equals(azc.getNaam()) &&
-                ("plaatsing".equalsIgnoreCase(bericht.getType()) || "vertrek".equalsIgnoreCase(bericht.getType()) || "verhuising".equalsIgnoreCase(bericht.getType()));
+                ("plaatsing".equalsIgnoreCase(bericht.getType()) || "vertrek".equalsIgnoreCase(bericht.getType()) || "verhuizing".equalsIgnoreCase(bericht.getType()));
     }
 
     @Override
     protected void processSpecificMessage(Bericht bericht) {
-        switch (bericht.getType()) {
+        switch (bericht.getType().toLowerCase()) {
             case "plaatsing":
                 plaatsen(bericht.getVluchteling(), bericht.getFamilie(), bericht);
                 break;
             case "vertrek":
                 vertrekVluchteling(bericht.getVluchteling(), bericht.getFamilie());
+                break;
+            case "verhuizing":
+
                 break;
             default:
                 System.out.println("Onbekend berichttype: " + bericht.getType());
@@ -91,16 +90,15 @@ public class AZCMedewerker extends MessageHandler {
     }
 
     private void plaatsen(Vluchteling vluchteling, Familie familie, Bericht bericht) {
-        Kamer gevestigdKamer = null;
+        Kamer gevestigdeKamer = vindGeschikteKamer(vluchteling, familie);
         if (vluchteling.getFamilie() == null) {
-            plaatsenVluchteling(vluchteling, gevestigdKamer, bericht);
-        }
-        else {
-           plaatsenGezin(vluchteling, familie, gevestigdKamer);
+            plaatsenVluchteling(vluchteling, gevestigdeKamer, bericht);
+        } else {
+            plaatsenGezin(vluchteling, familie, gevestigdeKamer);
         }
     }
 
-    private void plaatsenVluchteling (Vluchteling vluchteling, Kamer kamer, Bericht bericht) {
+    public void plaatsenVluchteling(Vluchteling vluchteling, Kamer kamer, Bericht bericht) {
         kamer = vindGeschikteKamer(vluchteling, null);
         if (kamer != null) {
             kamer.addBewoner(vluchteling);
@@ -111,7 +109,8 @@ public class AZCMedewerker extends MessageHandler {
         }
     }
 
-    private void plaatsenGezin (Vluchteling vluchteling, Familie familie, Kamer kamer) {
+
+    private void plaatsenGezin(Vluchteling vluchteling, Familie familie, Kamer kamer) {
         kamer = vindGeschikteKamer(vluchteling, familie);
         if (kamer != null) {
             for (Vluchteling f : familie.getLeden()) {
@@ -154,5 +153,4 @@ public class AZCMedewerker extends MessageHandler {
             System.out.println("Vluchteling " + vluchteling.getNaam() + " was niet gevonden in het AZC.");
         }
     }
-
 }

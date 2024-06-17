@@ -8,6 +8,8 @@ public class Vluchteling extends Subject {
     private Familie familie;
     private Dossier dossier;
     private AZC verblijfplaats;
+    private boolean isNonBinair;
+
 
     public Vluchteling(String naam, int leeftijd, String gender, boolean landVanHerkomst, Familie familie) {
         this.naam = naam;
@@ -55,6 +57,14 @@ public class Vluchteling extends Subject {
 
     public void setDossier(Dossier dossier) {
         this.dossier = dossier;
+    }
+
+    public boolean isNonBinair() {
+        return isNonBinair;
+    }
+
+    public void setNonBinair(boolean nonBinair) {
+        isNonBinair = nonBinair;
     }
 
     public AZC getVerblijfplaats() {
